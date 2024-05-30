@@ -47,22 +47,12 @@ struct HomeScreen: View {
                 print(errorMessage)
                 
             } else {
+                //Como data pode ser nula, precisamos 'desembrulhar'
                 guard let storesData = data else { return }
                 
-                // o .jsonObject é uma funcao que pode falhar 'throws -> Any' - entao temos que usar 'try'
-                // o try por sua vez nos obriga a usar a estrutura 'do' 'catch'
-                do {
-                    // '[String:Any]]' -> representa um Dicionário de String,Any (chave-valor)
-                    // [ [String:Any] ] -> representa uma Lista de Dicionários
-                    // Traduzindo em Kotlin -> '[ [String:Any] ]' Representa uma List<Map<String,Any>>
-                    
-                    let json = try JSONSerialization.jsonObject(with: storesData) as? [[String: Any]]
-                    guard let response = json else {return}
-                    print(response)
-                    
-                } catch{
-                    
-                }
+                //tentar decodificar o JSON para um Array de Lojas -> .self significa que é para converter naquele type, e não em uma instancia
+                //como essa decodificacao pode falhar, o try pode ser nulo -> 'try?'. Essas falhas ocorrem por divergencia entre o estilo de escrita das 'variaveis' do JSON (com _) vs. Padrao CamelCase no SWift/Kotlin
+                let listLojas = try? JSONDecoder().decode([Loja].self, from: storesData)
             }
             
         }
