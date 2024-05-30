@@ -14,7 +14,7 @@ struct Categoria: Identifiable{
     let image: String
 }
 
-struct Loja: Identifiable{
+struct Loja: Identifiable, Decodable{
     let id: Int
     let label: String
     let logoImage: String
