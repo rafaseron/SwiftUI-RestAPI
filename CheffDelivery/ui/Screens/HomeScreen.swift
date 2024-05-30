@@ -51,8 +51,12 @@ struct HomeScreen: View {
                 guard let storesData = data else { return }
                 
                 //tentar decodificar o JSON para um Array de Lojas -> .self significa que é para converter naquele type, e não em uma instancia
-                //como essa decodificacao pode falhar, o try pode ser nulo -> 'try?'. Essas falhas ocorrem por divergencia entre o estilo de escrita das 'variaveis' do JSON (com _) vs. Padrao CamelCase no SWift/Kotlin
+                //como essa decodificacao pode falhar, o try pode ser nulo -> 'try?'. Essas falhas ocorrem por divergencia entre o estilo de escrita das 'variaveis' do JSON (com _) vs. Padrao CamelCase no SWift/Kotlin. Para corrigir isso -> fazer CodingKeys em todas as structs de Molde necessárias (aqui no caso, Loja e Product)
                 let listLojas = try? JSONDecoder().decode([Loja].self, from: storesData)
+                
+                /* -> Para testar a decodificacao <-
+                guard let testeListLojas = listLojas else { return }
+                print(testeListLojas) */
             }
             
         }

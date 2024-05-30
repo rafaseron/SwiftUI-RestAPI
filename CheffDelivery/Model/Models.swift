@@ -22,6 +22,15 @@ struct Loja: Identifiable, Decodable{
     let address: String
     let stars: Int
     let products: [Product]
+    
+    private enum CodingKeys: String, CodingKey{
+        case id, stars, products
+        case label = "name"
+        case logoImage = "logo_image"
+        case headerImage = "header_image"
+        case address = "location"
+    }
+    
 }
 
 struct Product: Identifiable, Decodable{
@@ -30,4 +39,12 @@ struct Product: Identifiable, Decodable{
     let descricao: String
     let preco: Double
     let image: String
+    
+    private enum CodingKeys: String, CodingKey{
+        case id, image
+        case nome = "name"
+        case descricao = "description"
+        case preco = "price"
+        
+    }
 }
