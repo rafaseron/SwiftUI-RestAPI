@@ -24,7 +24,7 @@ struct Loja: Identifiable, Decodable{
     let products: [Product]
 }
 
-struct Product: Identifiable{
+struct Product: Identifiable, Decodable{
     let id: Int
     let nome: String
     let descricao: String
