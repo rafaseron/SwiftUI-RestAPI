@@ -24,6 +24,7 @@ struct StoresService{
         
         // Agora vamos usar um método de URLSession que aceite uma URLRequest como argumento. Lembrando de usar 'shared' para garantir Singleton
         let (data, response) = try await URLSession.shared.data(for: request)
+        print(response.self)
         let listStores = try JSONDecoder().decode([Loja].self, from: data)
         
         return.success(listStores)

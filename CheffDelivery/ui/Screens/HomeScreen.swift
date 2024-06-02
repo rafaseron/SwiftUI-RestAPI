@@ -13,25 +13,32 @@ struct HomeScreen: View {
     
     private let service = StoresService()
     @State private var listStores: [Loja] = []
+    @State private var isLoading: Bool = true
     
     // MARK: - View
     
     var body: some View {
         NavigationView{
             VStack(spacing: 30) {
-                NavigationBar()
-                    .padding(.horizontal, 15)
                 
-                ScrollView(.vertical, showsIndicators: false){
-                    LazyVStack(spacing: 20){
-                        CategoriasGridView(categoriaList: listaCategorias)
-                            .padding(.top, 50)
-                        CarouselBanners(bannerList: imageList)
-                        
-                        StoresList(shopsList: listaDeLojas)
-                        
-                    }.offset(y: -70)
-                    //.frame(height: 350)
+                if isLoading{
+                    ProgressView()
+                } else{
+                    NavigationBar()
+                        .padding(.horizontal, 15)
+                    
+                    ScrollView(.vertical, showsIndicators: false){
+                        LazyVStack(spacing: 20){
+                            CategoriasGridView(categoriaList: listaCategorias)
+                                .padding(.top, 50)
+                            CarouselBanners(bannerList: imageList)
+                            
+                            StoresList(shopsList: listStores)
+                            //StoresList(shopsList: listaDeLojas)
+                            
+                        }.offset(y: -70)
+                        //.frame(height: 350)
+                    }
                 }
                 
             }
@@ -57,12 +64,15 @@ struct HomeScreen: View {
             let result = try await service.getAllStores()
             switch(result){
             case .success(let stores):
-                self.listStores = stores
+                listStores = stores
+                isLoading = false
             case .failure(let error):
                 print(error.localizedDescription)
+                isLoading = false
             }
         }catch{
             print(error.localizedDescription)
+            isLoading = false
         }
     }
     
