@@ -33,7 +33,7 @@ struct Loja: Identifiable, Decodable{
     
 }
 
-struct Product: Identifiable, Decodable{
+struct Product: Identifiable, Decodable, Encodable{ //Poderia ser só o Protocolo 'Codable' -> ele é 'Decodable + Encodable' juntos
     let id: Int
     let nome: String
     let descricao: String

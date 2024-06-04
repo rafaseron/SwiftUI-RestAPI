@@ -23,17 +23,45 @@ struct StoresService{
         request.httpMethod = "GET"
         
         // Agora vamos usar um método de URLSession que aceite uma URLRequest como argumento. Lembrando de usar 'shared' para garantir Singleton
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let getResult = try await URLSession.shared.data(for: request)
+        let data = getResult.0
+        let response = getResult.1
         print(response.self)
         let listStores = try JSONDecoder().decode([Loja].self, from: data)
         
         return.success(listStores)
     }
     
+    func postAOrder(produto: Product) async throws -> Result<[String: Any]?, RequestError> {
+        guard let urlPost = URL(string: "https://private-501c8-rafaseron.apiary-mock.com/stores") else { return.failure(.invalidUrl)}
+        
+        let encondedData = try JSONEncoder().encode(produto)
+        
+        var postRequest = URLRequest(url: urlPost)
+        postRequest.httpMethod = "POST"
+        postRequest.httpBody = encondedData
+        
+       let result = try await URLSession.shared.data(for: postRequest)
+        let data = result.0
+        let urlResponse = result.1
+        
+        // Ao invés de fazer assim:
+        //let dataDecodedTest = try JSONDecoder().decode([String: Any].self, from: data)
+        
+        // É feito assim:
+        let dataDecoded = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        
+        /* Isso porque o 'Any' não entra em conformidade com o Protocolo Decodable. JSONSerialization é o método ANTIGO de como era feito 'Encode' e 'Decode' em Swift.
+           JSONSerialization é a maneira antiga de lidar com JSON em Swift. */
+        
+        return.success(dataDecoded)
+        
+    }
+    
 }
 
 
-// CÓDIGO ANTERIOR DO REQUEST USANDO URLSESSION
+// CÓDIGO ANTERIOR DO REQUEST DE GET USANDO URLSESSION
 
 
 //func getAllStores() async{
