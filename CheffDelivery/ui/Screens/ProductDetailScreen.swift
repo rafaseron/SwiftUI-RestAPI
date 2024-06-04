@@ -32,7 +32,11 @@ struct ProductDetailScreen: View {
             
             VStack(spacing: 8){
                 
-                ProductQuantityComponent(produtoQuantidade: $produtoQuantidade)
+                //Temo uma funcao onButtonClick Elevada no 'ProductQuantityComponent' para fins didáticos
+                ProductQuantityComponent(produtoQuantidade: $produtoQuantidade, onButtonClick: {
+                    produto in
+                    
+                })
                 //Precisa passar usando $ porque estamos passando uma varivel de @State para um Componente que espera uma @Binding
                 
                 /* A variavel de @State é a fonte unica da verdade.
@@ -48,7 +52,7 @@ struct ProductDetailScreen: View {
                     HStack{
                         Image(systemName: "cart")
                             .foregroundStyle(.white)
-                        Text("Adicionar ao carrinho")
+                        Text("Fazer pedido agora")
                             .font(.title2)
                             .foregroundStyle(.white)
                     }.foregroundStyle(.colorRed)
