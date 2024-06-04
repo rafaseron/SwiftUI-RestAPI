@@ -36,7 +36,7 @@ struct ProductDetailScreen: View {
                 ProductQuantityComponent(produtoQuantidade: $produtoQuantidade, onButtonClick: {
                     produto in
                     
-                })
+                }, onActionClick: {})
                 //Precisa passar usando $ porque estamos passando uma varivel de @State para um Componente que espera uma @Binding
                 
                 /* A variavel de @State é a fonte unica da verdade.
