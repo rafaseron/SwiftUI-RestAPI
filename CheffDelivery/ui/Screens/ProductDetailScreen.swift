@@ -11,6 +11,15 @@ struct ProductDetailScreen: View {
     let produto: Product
     @State var produtoQuantidade: Int = 1
     
+    @State var showAlert: Bool = false
+    @State var serviceMessage: String?
+    func showMessage() -> String{
+        guard let newMessage = serviceMessage else { return "A" }
+        return newMessage
+    }
+    
+    var service = StoresService()
+    
     var body: some View {
         ScrollView{
             Image(produto.image)
@@ -33,10 +42,10 @@ struct ProductDetailScreen: View {
             VStack(spacing: 8){
                 
                 //Temo uma funcao onButtonClick Elevada no 'ProductQuantityComponent' para fins didáticos
-                ProductQuantityComponent(produtoQuantidade: $produtoQuantidade, onButtonClick: {
-                    produto in
+                ProductQuantityComponent(produtoQuantidade: $produtoQuantidade/*, onButtonClick: {
+                    product in
                     
-                }, onActionClick: {})
+                }, onActionClick: {}*/)
                 //Precisa passar usando $ porque estamos passando uma varivel de @State para um Componente que espera uma @Binding
                 
                 /* A variavel de @State é a fonte unica da verdade.
@@ -48,7 +57,9 @@ struct ProductDetailScreen: View {
                 
                 Spacer()
                 
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                Button(action: { Task{
+                    await onOrderClick()
+                } }, label: {
                     HStack{
                         Image(systemName: "cart")
                             .foregroundStyle(.white)
@@ -60,13 +71,49 @@ struct ProductDetailScreen: View {
                         .padding(.vertical, 16)
                         .background(Color("ColorRed"))
                         .clipShape(RoundedRectangle(cornerRadius: 32))
-                        .shadow(color: Color("ColorRed").opacity(0.5), radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 6, y:8)
+                        .shadow(color: Color("ColorRed").opacity(0.5), radius: 10, x: 6, y:8)
                 }).offset(y: 60)
+                    .alert(isPresented: $showAlert){
+                        Alert(title: Text(showMessage()), message: Text("Agora é só aguardar ..."), dismissButton: .default(Text("Esperando ansionamente")))
+                    }
                 
             }.offset(y: 120)
             
         }.navigationBarBackButtonHidden()
     }
+    
+    // MARK: - Escopo da Struct - depois do Body
+    
+    // A funcao service.postAOrder pode retornar uma throws, o que obrigaria 'onOrderClick' a retornar uma throws também
+    // Como nao queremos retornar throws, precisamos usar o Escopo 'do-catch'
+    func onOrderClick() async{
+        do{
+            let result = try await service.postAOrder(produto: produto)
+            switch result{
+                
+            case .success(let message):
+                print("\(String(describing: message))") //apenas para depuracao
+                
+                guard let valuesArray = message?.values else { return }
+                // Ao pegar os values de um Dicionário, produzimos um 'array'
+                
+                // For para acessar o 'array de values' e conseguir mudar o valor de serviceMessage
+                for values in valuesArray{
+                    serviceMessage = (values as! String)
+                }
+                
+                showAlert = true
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                
+            }
+            
+        }catch{
+            print(error.localizedDescription)
+        }
+    }
+    
 }
 
 #Preview {

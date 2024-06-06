@@ -10,11 +10,11 @@ import SwiftUI
 struct ProductQuantityComponent: View {
     @Binding var produtoQuantidade: Int
     
-    // MARK: - Como Elevar funcoes em SwiftUI
-    var onButtonClick: (Product) -> Void = { _ in } //Elevando Argumentos junto
-    var onActionClick: () -> Void = {}  //Sem Elevar Argumentos
+    // MARK: - Como Elevar funcoes em SwiftUI - Código didático
+    //var onButtonClick: (Product) -> Void = { _ in } //Elevando Argumentos junto
+    //var onActionClick: () -> Void = {}  //Sem Elevar Argumentos
     
-    var produto: Product = Product(id: 200, nome: "String", descricao: "String", preco: 2.99, image: "String")
+    //var produto: Product = Product(id: 200, nome: "String", descricao: "String", preco: 2.99, image: "String")
     var body: some View {
         VStack{
             Text("Quantidade")
@@ -25,8 +25,8 @@ struct ProductQuantityComponent: View {
                     if produtoQuantidade>1{
                         produtoQuantidade -= 1
                     }
-                    onButtonClick(produto)
-                    onActionClick()
+                    //onButtonClick(produto)
+                    //onActionClick()
                 }, label: {
                     Image(systemName: "minus.circle.fill")
                         .font(.title2)
