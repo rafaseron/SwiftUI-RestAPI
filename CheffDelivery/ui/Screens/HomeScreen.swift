@@ -47,7 +47,8 @@ struct HomeScreen: View {
                 //O escopo Task tem a mesma funcao que o escopo de Couroutine em Kotlin
                 //Alem de serem rodadas em Scopo de 'Coroutines', também devem ter o await na frente
                 Task{
-                    await searchForStores()
+                    //await searchForStores()
+                    searchForStoresWithAlamofire()
                 }
             }
     }
@@ -72,6 +73,14 @@ struct HomeScreen: View {
             }
         }catch{
             print(error.localizedDescription)
+            isLoading = false
+        }
+    }
+    
+    func searchForStoresWithAlamofire() {
+        service.getAllStoresUsingAlamofire { stores, error in
+            guard let storesList = stores else { return }
+            listStores = storesList
             isLoading = false
         }
     }

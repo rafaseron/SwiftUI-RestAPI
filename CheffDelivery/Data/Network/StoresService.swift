@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Alamofire
 
 struct StoresService{
     
@@ -13,6 +14,8 @@ struct StoresService{
         case invalidUrl
         case errorRequest(error: String)
     }
+    
+    // MARK: - Usando as classes nativas do Swift
     
     func getAllStores() async throws -> Result<[Loja], RequestError>{
         guard let url = URL(string: "https://private-501c8-rafaseron.apiary-mock.com/stores") else { return.failure(.invalidUrl) }
@@ -58,10 +61,33 @@ struct StoresService{
         
     }
     
+    // MARK: - Usando Alamofire no lugar das classes nativas em Swift
+    
+    func getAllStoresUsingAlamofire(completion: @escaping ([Loja]?, Error?) -> Void){
+        AF.request("https://private-501c8-rafaseron.apiary-mock.com/stores").responseDecodable(of: [Loja].self){ response in
+            
+            switch response.result{
+                
+            case .success(let storesList):
+                completion(storesList, nil)
+                
+            case .failure(let error):
+                completion(nil, error)
+                
+            }
+            
+        }
+    }
+
+    
 }
 
 
-// CÓDIGO ANTERIOR DO REQUEST DE GET USANDO URLSESSION
+
+// MARK: - primeira versão da requisição, apenas para fins didáticos. Não recomendado pois não usa httpMethod
+
+
+// CÓDIGO ANTERIOR DO REQUEST DE GET USANDO URLSESSION com dataTask com a URL, no lugar de usar data para um request (esse com httpMethod e url embutidas nele)
 
 
 //func getAllStores() async{
